@@ -5,7 +5,8 @@ plugins {
 }
 
 group = 'org.example'
-version = '1.0-SNAPSHOT'
+def appReleaseVersion = '1.1.2'
+version = appReleaseVersion
 
 repositories {
     mavenCentral()
@@ -46,7 +47,7 @@ jlink {
         imageName = 'ProjectLMAO'
         installerName = 'ProjectLMAO'
         installerType = 'exe'
-        appVersion = '1.0.0'
+        appVersion = appReleaseVersion
         vendor = 'org.example'
         icon = 'src/main/packaging/app-icon.ico'
         installerOptions = [

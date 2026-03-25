@@ -1,5 +1,6 @@
 package org.example;
 
+import java.awt.Desktop;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.animation.FadeTransition;
@@ -75,7 +76,7 @@ public class Main {
     public static class PlayerApp extends Application {
         private static final String PREF_PLAYLIST = "savedPlaylist";
         private static final String PREF_VOLUME = "savedVolume";
-        private static final String PREF_ACCENT = "savedAccent";
+        private static final String PREF_ACCENT = "savedAccentProjectLMAO";
         private static final String PREF_WINDOW_X = "windowX";
         private static final String PREF_WINDOW_Y = "windowY";
         private static final String PREF_WINDOW_W = "windowWidth";
@@ -503,10 +504,14 @@ public class Main {
                 updateFooterTrackInfo();
                 statusLabel.setText("Playing from local files");
                 applyVolume();
-                updatePlayButtonLabel();
+                playButton.setText("\u25b6");
                 previousButton.setDisable(playlist.isEmpty());
                 nextButton.setDisable(playlist.isEmpty());
                 progressSlider.setDisable(false);
+
+                mediaPlayer.setOnPlaying(() -> playButton.setText("\u25a0"));
+                mediaPlayer.setOnPaused(() -> playButton.setText("\u25b6"));
+                mediaPlayer.setOnStopped(() -> playButton.setText("\u25b6"));
 
                 mediaPlayer.setOnEndOfMedia(() -> {
                     if (loopEnabled) {
@@ -579,11 +584,11 @@ public class Main {
             MediaPlayer.Status status = mediaPlayer.getStatus();
             if (status == MediaPlayer.Status.PLAYING) {
                 mediaPlayer.pause();
-                updatePlayButtonLabel();
+                playButton.setText("\u25b6");
                 statusLabel.setText("Stopped at " + elapsedTimeLabel.getText());
             } else {
                 mediaPlayer.play();
-                updatePlayButtonLabel();
+                playButton.setText("\u25a0");
                 statusLabel.setText("Playing from local files");
             }
         }
@@ -1007,7 +1012,7 @@ public class Main {
             updateBannerButton.setOnAction(event -> {
                 String url = (String) updateBannerButton.getUserData();
                 if (url != null && !url.isBlank()) {
-                    getHostServices().showDocument(url);
+                    openExternalUrl(url);
                 }
             });
             dismissUpdateButton.setOnAction(event -> hideUpdateBanner());
@@ -1019,6 +1024,21 @@ public class Main {
             banner.setPadding(new Insets(12, 14, 12, 14));
             banner.setUserData("update-banner");
             return banner;
+        }
+
+        private void openExternalUrl(String url) {
+            try {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().browse(URI.create(url));
+                    return;
+                }
+            } catch (Exception ignored) {
+            }
+
+            try {
+                getHostServices().showDocument(url);
+            } catch (Exception ignored) {
+            }
         }
 
         private ScrollPane createSettingsPanel() {
@@ -1462,7 +1482,10 @@ public class Main {
         private void applyVolume() {
             if (mediaPlayer != null) {
                 double normalized = volumeSlider.getValue() / 100.0;
-                mediaPlayer.setVolume(Math.pow(normalized, 2.2));
+                double curved = normalized <= 0.0
+                        ? 0.0
+                        : Math.pow(normalized, 2.55) * 0.72;
+                mediaPlayer.setVolume(Math.min(1.0, curved));
             }
             muted = volumeSlider.getValue() <= 0.01;
             if (!muted && volumeSlider.getValue() > 0) {
@@ -1497,7 +1520,12 @@ public class Main {
 
             Point2D point = shell.localToScreen(x, -10);
             if (point != null) {
-                progressHoverTooltip.show(shell, point.getX(), point.getY());
+                if (progressHoverTooltip.isShowing()) {
+                    progressHoverTooltip.setAnchorX(point.getX());
+                    progressHoverTooltip.setAnchorY(point.getY());
+                } else {
+                    progressHoverTooltip.show(shell, point.getX(), point.getY());
+                }
             }
         }
 
@@ -2109,7 +2137,7 @@ public class Main {
 
             MediaPlayer.Status status = mediaPlayer.getStatus();
             if (status == MediaPlayer.Status.PLAYING) {
-                playButton.setText("\u23f8");
+                playButton.setText("\u25a0");
             } else {
                 playButton.setText("\u25b6");
             }

@@ -1,6 +1,7 @@
 module org.example.player {
     requires javafx.controls;
     requires javafx.media;
+    requires java.desktop;
     requires java.net.http;
     requires java.prefs;
 
