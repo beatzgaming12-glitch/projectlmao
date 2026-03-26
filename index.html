@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mese Sanatoase de Zi cu Zi</title>
+  <style>
+    :root {
+      --bg: #d9f7c8;
+      --surface: #ffffff;
+      --surface-strong: #ecffe1;
+      --text: #16361b;
+      --muted: #4a6b4f;
+      --primary: #2ea043;
+      --secondary: #79c95d;
+      --accent: #c9f4b7;
+      --border: #8fcb7c;
+      --shadow: 0 8px 18px rgba(46, 160, 67, 0.12);
+      --sun: #ffd166;
+      --peach: #ffb86c;
+      --sky: #89d6fb;
+      --berry: #ff8fab;
+      --lavender: #cdb4ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    html *,
+    body,
+    body * {
+      cursor: none !important;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Comic Sans MS", Verdana, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 15%, rgba(255, 209, 102, 0.42), transparent 18%),
+        radial-gradient(circle at 88% 20%, rgba(137, 214, 251, 0.36), transparent 20%),
+        radial-gradient(circle at 20% 85%, rgba(255, 143, 171, 0.2), transparent 18%),
+        radial-gradient(circle at 82% 75%, rgba(205, 180, 255, 0.22), transparent 22%),
+        linear-gradient(180deg, #d8f8c8 0%, #cbf1b7 48%, #e7ffd9 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    a,
+    button,
+    summary,
+    details,
+    .meal-card,
+    .highlight {
+      cursor: none;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 999px;
+      pointer-events: none;
+      filter: blur(10px);
+      z-index: 0;
+      animation: floatBlob 11s ease-in-out infinite;
+    }
+
+    body::before {
+      width: 220px;
+      height: 220px;
+      top: 90px;
+      left: -40px;
+      background: rgba(255, 209, 102, 0.18);
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      right: -70px;
+      bottom: 60px;
+      background: rgba(137, 214, 251, 0.18);
+      animation-delay: -3s;
+    }
+
+    .page-decor,
+    .hero-decor {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 34px 18px 22px;
+      position: relative;
+    }
+
+    .hero-inner,
+    .content {
+      width: min(900px, calc(100% - 24px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-inner {
+      position: relative;
+      padding: 28px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(236, 255, 225, 0.95)),
+        linear-gradient(45deg, rgba(255, 209, 102, 0.08), rgba(137, 214, 251, 0.1));
+      border: 2px solid rgba(143, 203, 124, 0.9);
+      box-shadow: 0 18px 40px rgba(46, 160, 67, 0.16);
+      overflow: hidden;
+      animation: heroGlow 6s ease-in-out infinite;
+      transition: transform 0.18s ease-out;
+      transform-style: preserve-3d;
+    }
+
+    .hero-inner::before,
+    .hero-inner::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .hero-inner::before {
+      width: 180px;
+      height: 180px;
+      top: -50px;
+      right: -40px;
+      background: rgba(255, 209, 102, 0.24);
+    }
+
+    .hero-inner::after {
+      width: 120px;
+      height: 120px;
+      bottom: -35px;
+      left: -20px;
+      background: rgba(137, 214, 251, 0.26);
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.1));
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+      animation: twinkle 3.6s ease-in-out infinite;
+    }
+
+    .sparkle:nth-child(1) { top: 14%; left: 12%; animation-delay: -0.4s; }
+    .sparkle:nth-child(2) { top: 20%; right: 18%; animation-delay: -1.4s; }
+    .sparkle:nth-child(3) { top: 58%; right: 12%; animation-delay: -2s; }
+    .sparkle:nth-child(4) { bottom: 18%; left: 28%; animation-delay: -0.9s; }
+    .sparkle:nth-child(5) { top: 38%; left: 54%; animation-delay: -2.6s; }
+
+    .shape {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      filter: drop-shadow(0 10px 18px rgba(60, 90, 40, 0.14));
+      animation: floatShape linear infinite;
+      will-change: transform;
+      transition: transform 0.15s ease-out;
+    }
+
+    .shape.leaf-1 { top: 110px; left: 40px; animation-duration: 13s; }
+    .shape.leaf-2 { top: 340px; right: 55px; animation-duration: 16s; animation-delay: -4s; }
+    .shape.apple { top: 520px; left: 70px; animation-duration: 14s; animation-delay: -2s; }
+    .shape.orange { top: 190px; right: 110px; animation-duration: 15s; animation-delay: -7s; }
+    .shape.avocado { bottom: 120px; right: 36px; animation-duration: 17s; animation-delay: -5s; }
+
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: var(--primary);
+      letter-spacing: 0.03em;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 2px solid var(--border);
+      box-shadow: 0 8px 18px rgba(121, 201, 93, 0.16);
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 14px 0 10px;
+      max-width: 620px;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #1d7d2b;
+      text-shadow: 0 2px 0 rgba(255, 255, 255, 0.45);
+      animation: titleDrift 5s ease-in-out infinite;
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 620px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .highlights {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .highlight {
+      padding: 14px;
+      background: linear-gradient(135deg, #f7fff4, #fff6dc);
+      border: 2px solid #b9e7ab;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: fadeLift 0.9s ease both;
+      transform-style: preserve-3d;
+    }
+
+    .highlight:nth-child(2) {
+      background: linear-gradient(135deg, #f2fffb, #e7f7ff);
+      border-color: #9ad7ec;
+      animation-delay: 0.1s;
+    }
+
+    .highlight:nth-child(3) {
+      background: linear-gradient(135deg, #f8fff3, #fff0f5);
+      border-color: #d3b8ff;
+      animation-delay: 0.2s;
+    }
+
+    .highlight:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 16px 30px rgba(90, 120, 80, 0.16);
+    }
+
+    .highlight strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.98rem;
+      color: #24732e;
+    }
+
+    .content {
+      padding: 0 0 42px;
+    }
+
+    .intro-card {
+      margin-bottom: 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(236, 255, 225, 0.96), rgba(255, 249, 234, 0.98));
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      animation: fadeLift 0.9s ease both;
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease-out;
+    }
+
+    .intro-card p {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .meal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
+    .meal-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      animation: fadeLift 0.7s ease both;
+      transform-style: preserve-3d;
+    }
+
+    .meal-card[open] {
+      background: linear-gradient(180deg, #fcfffb, #fffef7);
+      box-shadow: 0 14px 28px rgba(46, 160, 67, 0.16);
+      border-color: #64b85b;
+    }
+
+    .meal-card:nth-child(2n) {
+      animation-delay: 0.08s;
+    }
+
+    .meal-card:nth-child(3n) {
+      animation-delay: 0.14s;
+    }
+
+    .meal-card summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #efffe8, #fff9e6);
+      transition: background-color 0.22s ease, transform 0.22s ease;
+    }
+
+    .meal-card:nth-child(2) summary,
+    .meal-card:nth-child(5) summary {
+      background: linear-gradient(135deg, #ecfff1, #e8f8ff);
+    }
+
+    .meal-card:nth-child(3) summary,
+    .meal-card:nth-child(6) summary {
+      background: linear-gradient(135deg, #f5ffe9, #fff1f6);
+    }
+
+    .meal-card summary:hover {
+      transform: translateY(-1px);
+    }
+
+    .meal-card summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .meal-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .meal-main {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .arrow {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), #46bf59);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: transform 0.28s ease, background-color 0.22s ease, box-shadow 0.22s ease;
+      box-shadow: 0 8px 16px rgba(46, 160, 67, 0.2);
+    }
+
+    .meal-card[open] .arrow {
+      background: linear-gradient(135deg, #247a33, #53b85f);
+      transform: rotate(180deg);
+    }
+
+    .meal-type {
+      display: inline-flex;
+      align-self: flex-start;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #d8f7c9, #fff2b8);
+      color: #226c2b;
+      font-size: 0.77rem;
+      font-weight: 700;
+      border: 1px solid #8fd184;
+    }
+
+    .meal-card h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.2;
+      color: #1d6326;
+    }
+
+    .meal-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.9rem;
+    }
+
+    .meal-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      padding: 0 16px;
+      transition: grid-template-rows 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+    }
+
+    .meal-content {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transform: translateY(-8px);
+      transition: transform 0.35s ease;
+    }
+
+    .meal-card[open] .meal-body {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      padding: 0 16px 16px;
+    }
+
+    .meal-card[open] .meal-content {
+      transform: translateY(0);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 0.84rem;
+      letter-spacing: 0.02em;
+      color: #34a13c;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    .price {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ddf9d2, #fff6d8);
+      border: 2px solid #84ce78;
+      font-size: 0.88rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .price strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+      color: #23752d;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      padding: 16px 18px;
+      background: linear-gradient(135deg, #348c3d, #45a34e 55%, #4ea6b7);
+      color: #efffeb;
+      border-radius: 14px;
+      border: 2px solid #26772e;
+      box-shadow: 0 14px 28px rgba(46, 160, 67, 0.18);
+      animation: footerPulse 7s ease-in-out infinite;
+    }
+
+    .footer-note p {
+      margin: 0;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    .credit {
+      margin: 12px 0 18px 18px;
+      font-size: 0.82rem;
+      color: #6e6e6e;
+      letter-spacing: 0.02em;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+      animation: fadeLift 1s ease both 0.4s;
+    }
+
+    .cursor-orb,
+    .cursor-trail-dot {
+      position: fixed;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+    }
+
+    .cursor-orb {
+      width: 16px;
+      height: 16px;
+      margin-left: -8px;
+      margin-top: -8px;
+      background: #35c84b;
+      border: 2px solid rgba(235, 255, 235, 0.9);
+      box-shadow: 0 0 0 3px rgba(53, 200, 75, 0.2);
+      transition: transform 0.08s linear;
+    }
+
+    .cursor-trail-dot {
+      width: 12px;
+      height: 12px;
+      margin-left: -6px;
+      margin-top: -6px;
+      background: rgba(53, 200, 75, 0.36);
+      opacity: 0;
+      transition: opacity 0.12s linear;
+    }
+
+    @keyframes floatBlob {
+      0%,
+      100% {
+        transform: translateY(0) translateX(0) scale(1);
+      }
+      50% {
+        transform: translateY(-20px) translateX(14px) scale(1.05);
+      }
+    }
+
+    @keyframes heroGlow {
+      0%,
+      100% {
+        box-shadow: 0 18px 40px rgba(46, 160, 67, 0.16);
+      }
+      50% {
+        box-shadow: 0 24px 50px rgba(137, 214, 251, 0.18);
+      }
+    }
+
+    @keyframes titleDrift {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-2px);
+      }
+    }
+
+    @keyframes fadeLift {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes footerPulse {
+      0%,
+      100% {
+        box-shadow: 0 14px 28px rgba(46, 160, 67, 0.18);
+      }
+      50% {
+        box-shadow: 0 18px 38px rgba(78, 166, 183, 0.22);
+      }
+    }
+
+    @keyframes twinkle {
+      0%,
+      100% {
+        transform: scale(0.8);
+        opacity: 0.35;
+      }
+      50% {
+        transform: scale(1.35);
+        opacity: 1;
+      }
+    }
+
+    @keyframes floatShape {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate3d(10px, -14px, 0) rotate(5deg);
+      }
+      50% {
+        transform: translate3d(-8px, -22px, 0) rotate(-6deg);
+      }
+      75% {
+        transform: translate3d(12px, -10px, 0) rotate(4deg);
+      }
+      100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .meal-grid,
+      .highlights {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 44px;
+      }
+
+      .shape {
+        opacity: 0.6;
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero,
+      .content {
+        width: 100%;
+      }
+
+      .hero-inner,
+      .content {
+        width: min(100%, calc(100% - 20px));
+      }
+
+      h1 {
+        font-size: 1.95rem;
+      }
+
+      .meal-card,
+      .intro-card,
+      .highlight,
+      .footer-note {
+        border-radius: 14px;
+      }
+
+      .cursor-orb,
+      .cursor-trail-dot,
+      .shape {
+        display: none;
+      }
+
+      body,
+      body *,
+      a,
+      button,
+      summary,
+      details,
+      .meal-card,
+      .highlight {
+        cursor: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-decor" aria-hidden="true">
+    <div class="shape leaf-1">🍃</div>
+    <div class="shape leaf-2">🌿</div>
+    <div class="shape apple">🍎</div>
+    <div class="shape orange">🍊</div>
+    <div class="shape avocado">🥑</div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-decor" aria-hidden="true">
+        <span class="sparkle"></span>
+        <span class="sparkle"></span>
+        <span class="sparkle"></span>
+        <span class="sparkle"></span>
+        <span class="sparkle"></span>
+      </div>
+
+      <span class="eyebrow">Ghid practic pentru alimentatie echilibrata</span>
+      <h1>Mese sanatoase, gustoase si usor de bugetat</h1>
+      <p>
+        O selectie de preparate potrivite pentru micul dejun, pranz sau cina, gandite pentru
+        ingrediente simple, nutritive si usor de gasit. Toata pagina este in romana, iar costurile
+        sunt estimate orientativ in lei pentru o portie pregatita acasa.
+      </p>
+
+      <div class="highlights">
+        <div class="highlight">
+          <strong>Ingredientele sunt accesibile</strong>
+          Combinatii pe baza de legume, cereale integrale, lactate, oua, peste sau carne slaba.
+        </div>
+        <div class="highlight">
+          <strong>Costuri estimate realist</strong>
+          Preturile variaza in functie de sezon, oras si magazin, dar ofera o baza utila pentru planificare.
+        </div>
+        <div class="highlight">
+          <strong>Idei pentru toata ziua</strong>
+          Mese satioase, echilibrate si potrivite pentru un stil de viata activ.
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="intro-card">
+      <p>
+        Alimentatia sanatoasa nu inseamna preparate complicate sau costuri foarte mari. Prin alegerea
+        unor ingrediente de baza si a unor combinatii bine gandite, poti obtine mese hranitoare care
+        sustin energia zilnica si aduc varietate in meniu.
+      </p>
+    </section>
+
+    <section class="meal-grid">
+      <details class="meal-card">
+        <summary>
+          <div class="meal-summary">
+            <div class="meal-main">
+              <span class="meal-type">Mic dejun</span>
+              <h2>Bol cu iaurt grecesc, ovaz si fructe</h2>
+              <p>Mic dejun rapid, dulce si hranitor.</p>
+            </div>
+            <span class="arrow">v</span>
+          </div>
+        </summary>
+        <div class="meal-body">
+          <div class="meal-content">
+            <h3 class="section-title">Ingrediente</h3>
+            <ul>
+              <li>Iaurt grecesc simplu</li>
+              <li>Fulgi de ovaz</li>
+              <li>Banana sau fructe de padure</li>
+              <li>Nuci sau migdale</li>
+              <li>Putina miere, optional</li>
+            </ul>
+            <div class="price">
+              <strong>Cost mediu estimat: 9 - 13 lei</strong>
+              Pretul poate fi mai mic atunci cand fructele sunt de sezon.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="meal-card">
+        <summary>
+          <div class="meal-summary">
+            <div class="meal-main">
+              <span class="meal-type">Mic dejun</span>
+              <h2>Omleta cu spanac, rosii si branza slaba</h2>
+              <p>O alegere simpla si satioasa pentru dimineata.</p>
+            </div>
+            <span class="arrow">v</span>
+          </div>
+        </summary>
+        <div class="meal-body">
+          <div class="meal-content">
+            <h3 class="section-title">Ingrediente</h3>
+            <ul>
+              <li>2 sau 3 oua</li>
+              <li>Spanac proaspat</li>
+              <li>Rosii cherry sau rosii normale</li>
+              <li>Telemea slaba sau branza cottage</li>
+              <li>O felie de paine integrala</li>
+            </ul>
+            <div class="price">
+              <strong>Cost mediu estimat: 10 - 15 lei</strong>
+              Este o optiune buna pentru un mic dejun bogat in proteine.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="meal-card">
+        <summary>
+          <div class="meal-summary">
+            <div class="meal-main">
+              <span class="meal-type">Pranz</span>
+              <h2>Piept de pui la gratar cu quinoa si salata</h2>
+              <p>Pranz echilibrat, usor si plin de energie.</p>
+            </div>
+            <span class="arrow">v</span>
+          </div>
+        </summary>
+        <div class="meal-body">
+          <div class="meal-content">
+            <h3 class="section-title">Ingrediente</h3>
+            <ul>
+              <li>Piept de pui</li>
+              <li>Quinoa fiarta</li>
+              <li>Mix de salata verde</li>
+              <li>Castravete, rosii, ardei</li>
+              <li>Ulei de masline si lamaie</li>
+            </ul>
+            <div class="price">
+              <strong>Cost mediu estimat: 18 - 25 lei</strong>
+              Quinoa ridica putin pretul, dar aduce un aport bun de nutrienti.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="meal-card">
+        <summary>
+          <div class="meal-summary">
+            <div class="meal-main">
+              <span class="meal-type">Pranz</span>
+              <h2>Supa crema de linte cu crutoane integrale</h2>
+              <p>Preparat cald, gustos si foarte bun pentru buget.</p>
+            </div>
+            <span class="arrow">v</span>
+          </div>
+        </summary>
+        <div class="meal-body">
+          <div class="meal-content">
+            <h3 class="section-title">Ingrediente</h3>
+            <ul>
+              <li>Linte rosie sau verde</li>
+              <li>Morcov, ceapa, telina</li>
+              <li>Usturoi</li>
+              <li>Condimente: turmeric, piper, boia</li>
+              <li>Paine integrala pentru crutoane</li>
+            </ul>
+            <div class="price">
+              <strong>Cost mediu estimat: 8 - 12 lei</strong>
+              Una dintre cele mai avantajoase mese sanatoase ca pret.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="meal-card">
+        <summary>
+          <div class="meal-summary">
+            <div class="meal-main">
+              <span class="meal-type">Cina</span>
+              <h2>Somon la cuptor cu broccoli si cartof dulce</h2>
+              <p>Cina moderna, colorata si bogata in nutrienti.</p>
+            </div>
+            <span class="arrow">v</span>
+          </div>
+        </summary>
+        <div class="meal-body">
+          <div class="meal-content">
+            <h3 class="section-title">Ingrediente</h3>
+            <ul>
+              <li>File de somon</li>
+              <li>Broccoli</li>
+              <li>Cartof dulce</li>
+              <li>Ulei de masline</li>
+              <li>Lamaie, sare si ierburi aromatice</li>
+            </ul>
+            <div class="price">
+              <strong>Cost mediu estimat: 24 - 34 lei</strong>
+              Somonul este mai scump, dar reprezinta o alegere nutritiva foarte buna.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="meal-card">
+        <summary>
+          <div class="meal-summary">
+            <div class="meal-main">
+              <span class="meal-type">Cina</span>
+              <h2>Salata cu naut, avocado si legume proaspete</h2>
+              <p>Masa usoara, fresh si foarte colorata.</p>
+            </div>
+            <span class="arrow">v</span>
+          </div>
+        </summary>
+        <div class="meal-body">
+          <div class="meal-content">
+            <h3 class="section-title">Ingrediente</h3>
+            <ul>
+              <li>Naut fiert</li>
+              <li>Avocado</li>
+              <li>Rosii, castraveti, ceapa rosie</li>
+              <li>Patrunjel sau rucola</li>
+              <li>Suc de lamaie si ulei de masline</li>
+            </ul>
+            <div class="price">
+              <strong>Cost mediu estimat: 14 - 20 lei</strong>
+              Pretul variaza in special in functie de costul avocado-ului.
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="footer-note">
+      <p>
+        Estimarile de pret sunt orientative pentru o portie si pot varia in functie de magazin,
+        promotii si sezon. Pentru un cost mai mic pe termen lung, este util sa cumperi ingrediente
+        de baza in cantitati mai mari si sa planifici mesele pentru mai multe zile.
+      </p>
+    </section>
+  </main>
+
+  <p class="credit">Created by Darius Lobont using Codex &copy;</p>
+  <div class="cursor-orb" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+  <div class="cursor-trail-dot" aria-hidden="true"></div>
+
+  <script>
+    const hero = document.querySelector(".hero-inner");
+    const parallaxItems = document.querySelectorAll(".meal-card, .highlight, .intro-card");
+    const floatingShapes = document.querySelectorAll(".shape");
+    const orb = document.querySelector(".cursor-orb");
+    const trailDots = document.querySelectorAll(".cursor-trail-dot");
+    const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const trailPoints = Array.from(trailDots, () => ({ x: mouse.x, y: mouse.y }));
+
+    function applyParallax(event) {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const moveX = (event.clientX - centerX) / 90;
+      const moveY = (event.clientY - centerY) / 90;
+
+      hero.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+      parallaxItems.forEach((item, index) => {
+        const depth = 95 + index * 7;
+        const x = (event.clientX - centerX) / depth;
+        const y = (event.clientY - centerY) / depth;
+        const openBoost = item.matches("details[open]") ? " scale(1.015)" : "";
+        item.style.transform = `translate(${x}px, ${y}px)` + openBoost;
+      });
+
+      floatingShapes.forEach((shape, index) => {
+        const factor = 70 + index * 10;
+        const x = (event.clientX - centerX) / factor;
+        const y = (event.clientY - centerY) / factor;
+        shape.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    }
+
+    window.addEventListener("mousemove", (event) => {
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+      applyParallax(event);
+
+      orb.style.transform = "scale(1.08)";
+      clearTimeout(window.cursorPulseTimer);
+      window.cursorPulseTimer = setTimeout(() => {
+        orb.style.transform = "scale(1)";
+      }, 90);
+    });
+
+    window.addEventListener("mousedown", () => {
+      document.documentElement.style.cursor = "none";
+      document.body.style.cursor = "none";
+      orb.style.transform = "scale(0.92)";
+    });
+
+    window.addEventListener("mouseup", () => {
+      document.documentElement.style.cursor = "none";
+      document.body.style.cursor = "none";
+      orb.style.transform = "scale(1)";
+    });
+
+    window.addEventListener("mouseleave", () => {
+      hero.style.transform = "translate(0, 0)";
+      parallaxItems.forEach((item) => {
+        const openBoost = item.matches("details[open]") ? " scale(1.015)" : "";
+        item.style.transform = "translate(0, 0)" + openBoost;
+      });
+      floatingShapes.forEach((shape) => {
+        shape.style.transform = "translate(0, 0)";
+      });
+    });
+
+    function animateCursor() {
+      orb.style.left = mouse.x + "px";
+      orb.style.top = mouse.y + "px";
+
+      trailPoints.forEach((point, index) => {
+        const leader = index === 0 ? mouse : trailPoints[index - 1];
+        point.x += (leader.x - point.x) * 0.28;
+        point.y += (leader.y - point.y) * 0.28;
+
+        const dot = trailDots[index];
+        const scale = 1 - index * 0.08;
+        dot.style.left = point.x + "px";
+        dot.style.top = point.y + "px";
+        dot.style.opacity = String(Math.max(0.12, 0.5 - index * 0.05));
+        dot.style.transform = `scale(${scale})`;
+      });
+
+      requestAnimationFrame(animateCursor);
+    }
+
+    animateCursor();
+  </script>
+</body>
+</html>
