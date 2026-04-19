@@ -105,7 +105,7 @@ public class Main {
         private final Label footerSongLabel = new Label("Nothing selected");
         private final Label footerMetaLabel = new Label("Local build");
         private final Label footerArtLabel = new Label("\u266B");
-        private final Label windowIconLabel = new Label("\u25B6");
+        private final Label windowIconLabel = new Label();
         private final Label windowTitleLabel = new Label("Project L.M.A.O.");
         private final Label searchLabel = new Label("QUICK FIND");
         private final Label accentLabel = new Label("ACCENT");
@@ -157,6 +157,7 @@ public class Main {
         private final Region volumeBarFill = new Region();
         private final Region volumeBarThumb = new Region();
         private final SVGPath playButtonGlyph = new SVGPath();
+        private final SVGPath windowIconGlyph = new SVGPath();
         private Label playlistBadge;
         private Label albumArt;
         private TabPane tabPane;
@@ -314,6 +315,7 @@ public class Main {
             configureSliders();
             configureSearch();
             configurePlayButtonGraphic();
+            configureWindowIconGraphic();
 
             playlistView.setOnMouseClicked(event -> {
                 if (event.getClickCount() != 1) {
@@ -1167,7 +1169,8 @@ public class Main {
             heroWidthLabel.setStyle("-fx-text-fill: " + accent + "; -fx-font-size: 11px; -fx-font-weight: 800;");
             colorPreview.setStyle("-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: 800; -fx-padding: 12 16 12 16;");
             footerSongLabel.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: 900;");
-            windowIconLabel.setStyle("-fx-text-fill: " + accent + "; -fx-font-size: 14px; -fx-font-weight: 900;");
+            windowIconGlyph.setFill(Color.web(accent));
+            windowIconLabel.setStyle("-fx-padding: 0 2 0 0;");
             windowTitleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 800;");
         }
 
@@ -1992,6 +1995,13 @@ public class Main {
             updatePlayButtonLabel();
         }
 
+        private void configureWindowIconGraphic() {
+            windowIconGlyph.setContent("M 2 1 L 5 1 L 5 10 L 11 10 L 11 13 L 2 13 Z");
+            windowIconGlyph.setStroke(null);
+            windowIconLabel.setText("");
+            windowIconLabel.setGraphic(windowIconGlyph);
+        }
+
         private String toHex(Color color) {
             int red = (int) Math.round(color.getRed() * 255);
             int green = (int) Math.round(color.getGreen() * 255);
@@ -2057,11 +2067,8 @@ public class Main {
             gc.fillOval(inset, inset, circleSize, circleSize);
 
             gc.setFill(Color.BLACK);
-            gc.fillPolygon(
-                    new double[]{size * 0.40, size * 0.40, size * 0.68},
-                    new double[]{size * 0.34, size * 0.66, size * 0.50},
-                    3
-            );
+            gc.fillRoundRect(size * 0.35, size * 0.28, size * 0.10, size * 0.38, size * 0.04, size * 0.04);
+            gc.fillRoundRect(size * 0.35, size * 0.56, size * 0.28, size * 0.10, size * 0.04, size * 0.04);
 
             SnapshotParameters parameters = new SnapshotParameters();
             parameters.setFill(Color.TRANSPARENT);
