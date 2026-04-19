@@ -4,9 +4,21 @@ plugins {
     id 'org.beryx.jlink' version '3.1.1'
 }
 
+import java.util.Locale
+
 group = 'org.example'
 def appReleaseVersion = '1.1.2'
 version = appReleaseVersion
+def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+def isWindows = osName.contains('win')
+def isLinux = osName.contains('linux')
+def isMac = osName.contains('mac')
+def requestedPackageType = findProperty('packageType')?.toString()?.trim()
+def defaultPackageType = isWindows ? 'exe' : (isLinux ? 'deb' : (isMac ? 'pkg' : null))
+def packageType = requestedPackageType ?: defaultPackageType
+def packageIcon = isWindows
+        ? file('src/main/packaging/app-icon.ico')
+        : (isLinux ? file('src/main/packaging/app-icon.png') : file('src/main/packaging/app-icon.icns'))
 
 repositories {
     mavenCentral()
@@ -46,14 +58,85 @@ jlink {
     jpackage {
         imageName = 'ProjectLMAO'
         installerName = 'ProjectLMAO'
-        installerType = 'exe'
+        if (packageType) {
+            installerType = packageType
+        }
         appVersion = appReleaseVersion
         vendor = 'org.example'
-        icon = 'src/main/packaging/app-icon.ico'
-        installerOptions = [
+        if (packageIcon.exists()) {
+            icon = packageIcon.absolutePath
+        }
+        installerOptions = isWindows ? [
                 '--win-dir-chooser',
                 '--win-menu',
                 '--win-shortcut'
-        ]
+        ] : []
     }
+}
+
+def linuxAppImageRoot = layout.buildDirectory.dir('appimage/ProjectLMAO.AppDir')
+def linuxAppImageUsr = layout.buildDirectory.dir('appimage/ProjectLMAO.AppDir/usr')
+
+tasks.register('prepareLinuxAppImage') {
+    group = 'distribution'
+    description = 'Prepares a Linux AppDir that can be turned into an AppImage.'
+    dependsOn tasks.named('jpackageImage')
+
+    doLast {
+        if (!isLinux) {
+            throw new GradleException('prepareLinuxAppImage must be run on Linux.')
+        }
+
+        def appDir = linuxAppImageRoot.get().asFile
+        def usrDir = linuxAppImageUsr.get().asFile
+        def sourceImage = file("$buildDir/jpackage/ProjectLMAO")
+        if (!sourceImage.exists()) {
+            throw new GradleException("Expected packaged app image at ${sourceImage}")
+        }
+
+        delete(appDir)
+        mkdir(usrDir)
+        copy {
+            from sourceImage
+            into usrDir
+        }
+
+        def appRun = new File(appDir, 'AppRun')
+        appRun.text = '''#!/bin/sh
+HERE="$(dirname "$(readlink -f "$0")")"
+exec "$HERE/usr/bin/ProjectLMAO" "$@"
+'''
+        appRun.setExecutable(true)
+
+        def desktopFile = new File(appDir, 'ProjectLMAO.desktop')
+        desktopFile.text = '''[Desktop Entry]
+Type=Application
+Name=Project L.M.A.O.
+Exec=ProjectLMAO
+Icon=app-icon
+Categories=AudioVideo;Audio;Player;
+Terminal=false
+'''
+
+        copy {
+            from file('src/main/packaging/app-icon.png')
+            into appDir
+            rename { 'app-icon.png' }
+        }
+    }
+}
+
+tasks.register('buildLinuxAppImage', Exec) {
+    group = 'distribution'
+    description = 'Builds a Linux AppImage with appimagetool.'
+    dependsOn tasks.named('prepareLinuxAppImage')
+
+    doFirst {
+        if (!isLinux) {
+            throw new GradleException('buildLinuxAppImage must be run on Linux.')
+        }
+    }
+
+    workingDir = projectDir
+    commandLine 'appimagetool', linuxAppImageRoot.get().asFile.absolutePath, "$buildDir/distributions/ProjectLMAO-${appReleaseVersion}.AppImage"
 }
